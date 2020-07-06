@@ -78,18 +78,45 @@ function drawMiniMap() {
         ctx.fillStyle = "#FF0000";
         ctx.arc(pos.x, pos.y, 2.5, 0, 2 * Math.PI);
         ctx.fill();
-
-	var aim = new Vector(10 * Math.cos(angle), 10 * Math.sin(angle));
-
-	ctx.beginPath();
-        ctx.strokeStyle = "#FF0000";
-	ctx.moveTo(pos.x, pos.y);
-	ctx.lineTo(pos.add(aim).x, pos.add(aim).y);
-	ctx.stroke();
 }
 
 function renderViewPort() {
-	
+	var ctx = RAYCASTER.viewPort.getContext('2d');
+	var viewPort = RAYCASTER.viewPort;
+	var delta = (Math.PI / 3) / viewPort.width;
+
+        ctx.fillStyle = "#FFFFFF";
+        ctx.fillRect(0, 0, viewPort.width, viewPort.height);
+
+	for (var column = 0; column < viewPort.width; column = column + 1) {
+		var offset = - (Math.PI / 6) + delta * column;
+		distance = cast(RAYCASTER.angle + offset);	
+		projection = 32 * 277 / (distance * Math.cos(offset));
+
+		ctx.beginPath();
+	        ctx.strokeStyle = "#000000";
+		ctx.moveTo(column, viewPort.height / 2 + projection / 2);
+		ctx.lineTo(column, viewPort.height / 2 - projection / 2);
+		ctx.stroke();
+	}
+}
+
+function cast(angle) {
+	var aux = new Vector(RAYCASTER.pos.x, RAYCASTER.pos.y);
+
+	while (aux.x > 0 && aux.x < RAYCASTER.miniMap.width && aux.y > 0 && aux.y < RAYCASTER.miniMap.height) {
+		aux = aux.add(new Vector(Math.cos(angle), Math.sin(angle)));
+	}
+
+	var ctx = RAYCASTER.miniMap.getContext('2d');
+
+	ctx.beginPath();
+	ctx.strokeStyle = "#00FF00";
+	ctx.moveTo(RAYCASTER.pos.x, RAYCASTER.pos.y);
+	ctx.lineTo(aux.x, aux.y);
+	ctx.stroke();	
+
+	return aux.sub(RAYCASTER.pos).abs();
 }
 
 function keyDownHandler(event) {
