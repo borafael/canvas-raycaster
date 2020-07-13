@@ -150,8 +150,16 @@ function renderViewPort() {
 		//projection = RAYCASTER.size / 2 * 277 / distance;
 
 		ctx.beginPath();
-		ctx.strokeStyle = getRandomColor();
+		//ctx.strokeStyle = getRandomColor();
 
+		var maxDistance = Math.sqrt((RAYCASTER.miniMap.width * RAYCASTER.miniMap.width) +
+			(RAYCASTER.miniMap.height * RAYCASTER.miniMap.height));
+		var colorComponent = Math.floor((1 - (distance / maxDistance)) * 255.0).toString(
+				16)
+			.padStart(2, '0');
+		var color = '#' + colorComponent + colorComponent + colorComponent;
+
+		ctx.strokeStyle = color;
 		ctx.moveTo(column, viewPort.height / 2 + projection / 2);
 		ctx.lineTo(column, viewPort.height / 2 - projection / 2);
 		ctx.stroke();
