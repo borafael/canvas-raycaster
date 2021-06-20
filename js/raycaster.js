@@ -1,6 +1,5 @@
 var RAYCASTER = {};
 
-
 function init() {
 	RAYCASTER.miniMap = document.getElementById('miniMap');
 	RAYCASTER.viewPort = document.getElementById('viewPort');
@@ -124,7 +123,7 @@ function renderMiniMap() {
 		for (var colIndex = 0; colIndex < columns; colIndex++) {
 			if (map[rowIndex][colIndex]) {
 				ctx.fillStyle = "#000000";
-				ctx.fillRect(colIndex * size, rowIndex * size, 64, 64);
+				ctx.fillRect(colIndex * size, rowIndex * size, size, size);
 			}
 		}
 	}
@@ -146,8 +145,8 @@ function renderViewPort() {
 	for (var column = 0; column < viewPort.width; column = column + 1) {
 		var offset = -(Math.PI / 6) + delta * column;
 		distance = cast(RAYCASTER.angle + offset);
-		projection = 32 * 277 / (distance * Math.cos(offset));
-		//projection = RAYCASTER.size / 2 * 277 / distance;
+		//projection = RAYCASTER.size * 277 / (distance * Math.cos(offset));
+		projection = RAYCASTER.size / 2 * 277 / distance;
 
 		ctx.beginPath();
 		//ctx.strokeStyle = getRandomColor();
@@ -178,7 +177,7 @@ function getRandomColor() {
 function cast(angle) {
 	var aux = new Vector(RAYCASTER.pos.x, RAYCASTER.pos.y);
 
-	while (aux.x > 0 && aux.x < RAYCASTER.miniMap.width && aux.y > 0 && aux.y <
+	while (aux.x >= 0 && aux.x <= RAYCASTER.miniMap.width && aux.y >= 0 && aux.y <=
 		RAYCASTER.miniMap.height && isHollow(aux)) {
 		aux = aux.add(new Vector(Math.cos(angle), Math.sin(angle)));
 	}
